@@ -402,20 +402,22 @@ namespace SI1151 {
     }
 
     /**
-    * get halfword sunlight
+    * get halfword visible light
     * 
     */
+    //% group="Sunlight sensor SI1151"
+    //% block="read Visible Light [lm]"
     export function getHalfWord_Visible(): number {
         return Math.round(si1151.ReadHalfWord_VISIBLE());
     }
 
     /**
-    * get halfword sunlight
+    * get halfword infrared light
     * 
     */
     //% group="Sunlight sensor SI1151"
     //% block="read IR [lm]"
-    export function getHalfWordIR(): number {
+    export function getHalfWord_IR(): number {
         return Math.round(si1151.ReadHalfWord_IR());
     }
 
@@ -424,8 +426,8 @@ namespace SI1151 {
 * 
 */
     //% group="Sunlight sensor SI1151"
-    //% block="read UV [lm]"
-    export function getHalfWordUV(): number {
+    //% block="read UV index"
+    export function getHalfWord_UV(): number {
         return Math.round(si1151.ReadHalfWord_UV());
     }
 }
