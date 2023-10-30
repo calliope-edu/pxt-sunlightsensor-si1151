@@ -416,7 +416,7 @@ namespace SI1151 {
     * 
     */
     //% group="Sunlight sensor SI1151"
-    //% block="IR intensity"
+    //% block="IR intensity [lm]"
     export function getHalfWord_IR(): number {
         return Math.round(si1151.ReadHalfWord_IR());
     }

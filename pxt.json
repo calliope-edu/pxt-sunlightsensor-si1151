@@ -9,6 +9,8 @@
         "main.ts",
         "README.md",
         "test.ts",
+        "_locales/SI1151-strings.json",
+        "_locales/SI1151-jsdoc-strings.json",
         "_locales/de/SI1151-strings.json",
         "_locales/de/SI1151-jsdoc-strings.json"
     ],
