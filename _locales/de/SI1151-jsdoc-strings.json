@@ -1,4 +1,5 @@
 {
+	"SI1151.initSunlight": "Initialisiert den Sonnenlichtsensor SI1151",
 	"SI1151.getHalfWordUV": "Liest den Ultraviolet Index",
 	"SI1151.getHalfWord_Visible": "Liest die Licht Intensität",
 	"SI1151.getHalfWordIR": "Liest die Infrarot Intensität"
