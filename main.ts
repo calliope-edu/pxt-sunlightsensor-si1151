@@ -406,6 +406,7 @@ namespace SI1151 {
     * 
     */
     //% group="Sunlight sensor SI1151"
+    //% block="Light intensity [lm]"
     export function getHalfWord_Visible(): number {
         return Math.round(si1151.ReadHalfWord_VISIBLE());
     }
@@ -415,6 +416,7 @@ namespace SI1151 {
     * 
     */
     //% group="Sunlight sensor SI1151"
+    //% block="IR intensity"
     export function getHalfWord_IR(): number {
         return Math.round(si1151.ReadHalfWord_IR());
     }
@@ -424,6 +426,7 @@ namespace SI1151 {
 * 
 */
     //% group="Sunlight sensor SI1151"
+    //% block="UV index"
     export function getHalfWord_UV(): number {
         return Math.round(si1151.ReadHalfWord_UV());
     }
