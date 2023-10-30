@@ -1,0 +1,6 @@
+{
+	"SI1151.initSunlight": "initialise sunlight sensor SI1151",
+	"SI1151.getHalfWordUV": "reads the UV index",
+	"SI1151.getHalfWord_Visible": "reads the light intensity",
+	"SI1151.getHalfWordIR": "reads the IR intensity"
+}

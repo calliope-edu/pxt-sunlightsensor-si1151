@@ -1,0 +1,6 @@
+{
+	"SI1151.initSunlight|block": "Init sunlight sensor",
+	"SI1151.getHalfWord_UV|block": "UV index",
+	"SI1151.getHalfWord_Visible|block": "light intensity (lm)",
+	"SI1151.getHalfWord_IR|block": "IR intensity(lm)"
+}

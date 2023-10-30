@@ -394,7 +394,7 @@ namespace SI1151 {
 * 
 */
     let si1151 = new SI1151();
-    //% group="sunlight sensor SI1151"
+    //% group="Sunlight sensor SI1151"
     //% block="init sunlight sensor"
     export function initSunlight() {
         //if (!sgp30) {
