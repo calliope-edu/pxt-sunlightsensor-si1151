@@ -1,5 +1,6 @@
 {
     "name": "SI1151",
+    "version": "0.0.1",
     "description": "sunlightsensor Si1151",
     "dependencies": {
         "core": "*"
