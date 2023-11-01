@@ -111,6 +111,7 @@ enum ParameterAddress {
     BURST = 0x2B
 };
 
+//%color=#444444 icon="\uf185" block="SI1151"
 namespace SI1151 {
 
 

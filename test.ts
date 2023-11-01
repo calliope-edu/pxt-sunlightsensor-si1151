@@ -1,4 +1,3 @@
-
 SI1151.initSunlight()
 basic.forever(function () {
     serial.writeLine("Licht:" + SI1151.getHalfWord_Visible())
