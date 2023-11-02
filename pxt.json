@@ -1,6 +1,7 @@
 {
-    "name": "pxt-sunlightsensor-si1151",
-    "description": "",
+    "name": "SI1151",
+    "version": "0.0.1",
+    "description": "sunlightsensor Si1151",
     "dependencies": {
         "core": "*"
     },
@@ -8,9 +9,6 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "test.ts",
-        "_locales/SI1151-strings.json",
-        "_locales/SI1151-jsdoc-strings.json",
         "_locales/de/SI1151-strings.json",
         "_locales/de/SI1151-jsdoc-strings.json"
     ],
