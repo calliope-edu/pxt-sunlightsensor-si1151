@@ -1,0 +1,6 @@
+{
+  "SunlightSensor.getHalfWordIR": "Returns the current infrared reading.",
+  "SunlightSensor.getHalfWordUV": "Returns the UV index. Directly measured on SI1145,\ncalculated from IR and visible channels on SI1151.",
+  "SunlightSensor.getHalfWord_Visible": "Returns the current visible light reading.",
+  "SunlightSensor.initSunlight": "Initialise the Grove Sunlight Sensor.\nSelect the sensor version from the dropdown."
+}

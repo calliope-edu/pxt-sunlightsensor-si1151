@@ -1,0 +1,11 @@
+{
+  "SensorVersion.SI1145|block": "SI1145 (V1)",
+  "SensorVersion.SI1151|block": "SI1151 (V2)",
+  "SunlightSensor.getHalfWordIR|block": "infrared",
+  "SunlightSensor.getHalfWordUV|block": "UV index",
+  "SunlightSensor.getHalfWord_Visible|block": "light intensity",
+  "SunlightSensor.initSunlight|block": "initialise sunlight sensor %version at A0",
+  "SunlightSensor|block": "Sunlight Sensor",
+  "{id:category}SunlightSensor": "SunlightSensor",
+  "{id:group}Sunlight Sensor": "Sunlight Sensor"
+}

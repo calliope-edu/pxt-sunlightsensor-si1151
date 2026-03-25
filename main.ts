@@ -1,434 +1,290 @@
-enum UnitAddress {
-    DEVICE_ADDRESS = 0x53
-};
-
-enum CommandCodes {
-    RESET_CMD_CTR = 0x00,
-    RESET_SW = 0x01,
-    FORCE = 0x11,
-    PAUSE = 0x12,
-    START = 0x13
-};
-
-enum RegisterAddress {
-    PART_ID = 0x00,
-    REV_ID = 0x01,
-    MFR_ID = 0x02,
-    INFO_0 = 0x03,
-    INFO_1 = 0x04,
-    HOSTIN_3 = 0x07,
-    HOSTIN_2 = 0x08,
-
-    HOSTIN_0 = 0x0A,
-    COMMAND = 0x0B,
-    IRQ_ENABLE = 0x0F,
-    RESPONSE_0 = 0x11,
-    RESPONSE_1 = 0x10,
-
-    IRQ_STATUS = 0x12,
-    HOSTOUT_0 = 0x13,
-    HOSTOUT_1 = 0x14,
-    HOSTOUT_2 = 0x15,
-    HOSTOUT_3 = 0x16,
-    HOSTOUT_4 = 0x17,
-    HOSTOUT_5 = 0x18,
-    HOSTOUT_6 = 0x19,
-    HOSTOUT_7 = 0x1A,
-    HOSTOUT_8 = 0x1B,
-    HOSTOUT_9 = 0x1C,
-    HOSTOUT_10 = 0x1D,
-    HOSTOUT_11 = 0x1E,
-    HOSTOUT_12 = 0x1F,
-    HOSTOUT_13 = 0x20,
-    HOSTOUT_14 = 0x21,
-    HOSTOUT_15 = 0x22,
-    HOSTOUT_16 = 0x23,
-    HOSTOUT_17 = 0x24,
-    HOSTOUT_18 = 0x25,
-    HOSTOUT_19 = 0x26,
-    HOSTOUT_20 = 0x27,
-    HOSTOUT_21 = 0x28,
-    HOSTOUT_22 = 0x29,
-    HOSTOUT_23 = 0x2A,
-    HOSTOUT_24 = 0x2B,
-    HOSTOUT_25 = 0x2C
-};
-
-enum ParameterAddress {
-    I2C_ADDR = 0x00,
-    CHAN_LIST = 0x01,
-
-    ADCCONFIG_0 = 0x02,
-    ADCSENS_0 = 0x03,
-    ADCPOST_0 = 0x04,
-    MEASCONFIG_0 = 0x05,
-
-    ADCCONFIG_1 = 0x06,
-    ADCPOST_1 = 0x08,
-    ADCSENS_1 = 0x07,
-    MEASCONFIG_1 = 0x09,
-
-    ADCCONFIG_2 = 0x0A,
-    ADCSENS_2 = 0x0B,
-    ADCPOST_2 = 0x0C,
-    MEASCONFIG_2 = 0x0D,
-
-    ADCCONFIG_3 = 0x0E,
-    ADCSENS_3 = 0x0F,
-    ADCPOST_3 = 0x10,
-    MEASCONFIG_3 = 0x11,
-
-    ADCCONFIG_4 = 0x12,
-    ADCSENS_4 = 0x13,
-    ADCPOST_4 = 0x14,
-    MEASCONFIG_4 = 0x15,
-
-    ADCCONFIG_5 = 0x16,
-    ADCSENS_5 = 0x17,
-    ADCPOST_5 = 0x18,
-    MEASCONFIG_5 = 0x19,
-
-    MEASRATE_H = 0x1A,
-    MEASRATE_L = 0x1B,
-    MEASCOUNT_0 = 0x1C,
-    MEASCOUNT_1 = 0x1D,
-    MEASCOUNT_2 = 0x1E,
-
-    LED1_A = 0x1F,
-    LED1_B = 0x20,
-    LED2_A = 0x21,
-    LED2_B = 0x22,
-    LED3_A = 0x23,
-    LED3_B = 0x24,
-
-    THRESHOLD0_H = 0x25,
-    THRESHOLD0_L = 0x26,
-    THRESHOLD1_H = 0x27,
-    THRESHOLD1_L = 0x28,
-    THRESHOLD2_H = 0x29,
-    THRESHOLD2_L = 0x2A,
-
-    BURST = 0x2B
-};
-
-//%color=#444444 icon="\uf185" block="SI1151"
-namespace SI1151 {
-
-
-    export class SI1151 {
-
-        conf: Buffer;
-        writeBuf: Buffer;
-
-        /**
-           Configures a channel at a given index
-        */
-
-        private config_channel(index: number) {
-            //
-            let len = 4;
-
-            if (len != 4 || index < 0 || index > 5)
-                return;
-
-            let inc = index * len;
-
-            /*serial.writeLine("conf0 " + this.conf[0]);
-            serial.writeLine("conf1 " + this.conf[1]);
-            serial.writeLine("conf2 " + this.conf[2]);
-            serial.writeLine("conf3 " + this.conf[3]);*/
-
-
-            this.param_set(ParameterAddress.ADCCONFIG_0 + inc, this.conf[0]);
-            this.param_set(ParameterAddress.ADCSENS_0 + inc, this.conf[1]);
-            this.param_set(ParameterAddress.ADCPOST_0 + inc, this.conf[2]);
-            this.param_set(ParameterAddress.MEASCONFIG_0 + inc, this.conf[3]);
-        }
-
-        /**
-           Writes data over i2c
-        */
-        private write_data(len: number) {    //check
-
-            //let buf: Buffer = pins.createBuffer(len+1);
-            //buf = this.writeBuf;
-            pins.i2cWriteBuffer(UnitAddress.DEVICE_ADDRESS, this.writeBuf, false);
-
-        }
-
-        /**
-           Reads data from a register over i2c
-        */
-        private read_register(addr: number, reg: number, bytesOfData: number): number {  //int     //check
-
-            let buf: Buffer = pins.createBuffer(bytesOfData);
-            buf[0] = reg;
-            pins.i2cWriteBuffer(addr, buf, false);
-            buf = pins.i2cReadBuffer(addr, 1, false);
-            return buf[0];
-
-        }
-
-        /**
-           param set as shown in the datasheet
-        */
-        private param_set(loc: number, val: number) {   //eher check
-            //let packet: Buffer = pins.createBuffer(2);
-            let r;
-            let cmmnd_ctr;
-
-            do {
-                cmmnd_ctr = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_0, 1);
-
-                this.writeBuf = pins.createBuffer(2);
-                this.writeBuf[0] = RegisterAddress.HOSTIN_0;
-                this.writeBuf[1] = val;
-                //serial.writeLine("val= " + val);
-                this.write_data(2);
-
-                this.writeBuf[0] = RegisterAddress.COMMAND;
-                this.writeBuf[1] = loc | (0B10 << 6);
-                //serial.writeLine("loc= " + loc);
-                this.write_data(2);
-
-                r = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_0, 1);
-            } while (r > cmmnd_ctr);
-        }
-
-
-        /**
-         param query as shown in the datasheet
-        */
-        private param_query(loc: number): number {
-            let result = -1;
-            let r;
-            let cmmnd_ctr;
-
-            do {
-                cmmnd_ctr = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_0, 1);
-
-                this.writeBuf = pins.createBuffer(2);
-                this.writeBuf[0] = RegisterAddress.COMMAND;
-                this.writeBuf[1] = loc | (0B01 << 6);
-
-                this.write_data(2);
-
-                r = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_0, 1);
-            } while (r > cmmnd_ctr);
-
-            result = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_1, 1);
-
-            return result;
-        }
-
-        /**
-         Sends command to the command register
-        */
-        send_command(code: number) {    //check
-            let packet: Buffer = pins.createBuffer(2);
-            let r;
-            let cmmnd_ctr;
-            do {
-                cmmnd_ctr = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_0, 1);
-
-                //packet[0] = RegisterAddress.COMMAND;
-                //packet[1] = code;
-                this.writeBuf = pins.createBuffer(2);
-                this.writeBuf[0] = RegisterAddress.COMMAND;
-                this.writeBuf[1] = code;
-                //serial.writeLine("0 und " + this.writeBuf[0]);
-                //serial.writeLine("1 und " + this.writeBuf[1]);
-
-
-                this.write_data(2);
-
-                r = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.RESPONSE_0, 1);
-            } while (r > cmmnd_ctr);
-
-        }
-
-        /**
-         Returns int given a byte array
-        */
-        /*get_int_from_bytes(uint8_t * data, size_t len): number{
-            int result = 0;
-            int shift = 8 * len;
-            
-            for (int i = 0; i < len; i++) {
-                shift -= 8;
-                result |= ((data[i] << shift) & (0xFF << shift));
-            }
-            return result;
-        }*/
-
-        init(): boolean {
-
-            if (this.ReadByte(0x00) != 0x51) {  //Device ID, 0x51 if Si1151
-                return false;
-            }
-            this.send_command(CommandCodes.START);
-
-            this.param_set(ParameterAddress.CHAN_LIST, 0B000010);   //channel1 enabled
-
-            this.param_set(ParameterAddress.MEASRATE_H, 0);
-            this.param_set(ParameterAddress.MEASRATE_L, 1);  // 1 for a base period of 800 us
-            this.param_set(ParameterAddress.MEASCOUNT_0, 5);
-            this.param_set(ParameterAddress.MEASCOUNT_1, 10);
-            this.param_set(ParameterAddress.MEASCOUNT_2, 10);
-            this.param_set(ParameterAddress.THRESHOLD0_L, 200);
-            this.param_set(ParameterAddress.THRESHOLD0_H, 0);
-
-            this.writeBuf = pins.createBuffer(2);
-            this.writeBuf[0] = RegisterAddress.IRQ_ENABLE;
-            //this.write_data(1);
-            this.writeBuf[1] = 0B000010;
-            this.write_data(2);
-
-            this.conf = pins.createBuffer(4);
-
-            //this.conf[0] = 0B00000000;
-            //this.conf[1] = 0B00000010,
-
-            //777
-            //this.conf[2] = 0B00000001;      //Arduino
-            //this.conf[2] = 0B01111000;      //Raspy
-            //this.conf[3] = 0B11000001;      //Arduino
-            //this.conf[3] = 0B11000000;      //Raspy
-
-            this.conf[0] = 13;
-            this.conf[1] = 0;
-            this.conf[2] = 0;
-            this.conf[3] = 0;
-
-            this.config_channel(0);
-
-            this.conf[0] = 15;
-            this.conf[1] = 0;
-            this.conf[2] = 0;
-            this.conf[3] = 0;
-
-            this.config_channel(1);
-
-            this.conf[0] = 2;
-            this.conf[1] = 0;
-            this.conf[2] = 0;
-            this.conf[3] = 0;
-
-            this.config_channel(2);
-
-            /*this.conf[0] = 0B00000000;
-            this.conf[1] = 0B00000010,
-            this.conf[2] = 0B01111000;
-            this.conf[3] = 0B11000000;
-            this.config_channel(1);*/
-
-            basic.pause(100);
-            //let read_register;
-            //let adr;
-
-            /*adr = 0x01;
-            read_register = this.param_query(adr);
-            serial.writeLine("read register adr: " + adr + ", data: " + read_register);
-            adr = RegisterAddress.IRQ_ENABLE; //0x0F
-            read_register = this.read_register(0x53,adr,1);
-            serial.writeLine("read register adr: " + adr + ", data: " + read_register);*/
-
-            return true;
-
-        }
-
-        ReadHalfWord_IR(): number {
-            this.param_set(ParameterAddress.CHAN_LIST, 0B000001);   //channel0 enabled
-            this.send_command(CommandCodes.FORCE);
-            let data: Buffer = pins.createBuffer(3);
-            data[0] = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.HOSTOUT_0, 1);
-            data[1] = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.HOSTOUT_1, 1);
-            // Si115X::send_command(Si115X::PAUSE);
-            // data[3] = data[0] * 256 + data[1];
-            return data[0] * 256 + data[1]; //* 256 + data[1];
-        }
-
-
-
-        //Kann keinen UV-Idx messen
-
-        ReadHalfWord_VISIBLE(): number {
-            this.param_set(ParameterAddress.CHAN_LIST, 0B000001);   //channel0 enabled
-            this.send_command(CommandCodes.FORCE);
-            let data: Buffer = pins.createBuffer(3);
-            data[0] = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.HOSTOUT_0, 1);
-            data[1] = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.HOSTOUT_1, 1);
-            //serial.writeLine("RegisterAdress.Hostout0 " + RegisterAddress.HOSTOUT_0);
-            //serial.writeLine("data0 " + data[0]);
-            //serial.writeLine("data1 " + data[1]);
-            //serial.writeLine("return " + (data[0] * 256 + data[1]) / 3);
-
-            return (data[0] * 256 + data[1]) / 3;
-
-        }
-
-        ReadHalfWord_UV(): number {
-            this.param_set(ParameterAddress.CHAN_LIST, 0B000001);   //channel0 enabled
-            this.send_command(CommandCodes.FORCE);
-            let data: Buffer = pins.createBuffer(3);
-            data[0] = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.HOSTOUT_0, 1);
-            data[1] = this.read_register(UnitAddress.DEVICE_ADDRESS, RegisterAddress.HOSTOUT_1, 1);
-
-            return ((data[1] * 256 + data[0]) / 3) * 0.0012;
-
-        }
-
-        private ReadByte(Reg: number): number {
-            let buf: Buffer = pins.createBuffer(1);
-
-            buf[0] = Reg;
-            pins.i2cWriteBuffer(UnitAddress.DEVICE_ADDRESS, buf, false);
-            buf = pins.i2cReadBuffer(UnitAddress.DEVICE_ADDRESS, 1, false);
-
-            return buf[0];
-        }
+// ============================================================
+// Grove Sunlight Sensor – MakeCode PXT Extension
+// Unterstützt: SI1145 (V1) und SI1151 (V2)
+//
+// ============================================================
+
+// Sensor-Versionsauswahl – erscheint als Dropdown im Init-Block
+enum SensorVersion {
+    //% block="SI1151 (V2)"
+    SI1151 = 0,
+    //% block="SI1145 (V1)"
+    SI1145 = 1
+}
+
+//% color=#F7B731 icon="\uf185" block="Sunlight Sensor"
+namespace SunlightSensor {
+
+    // Sensor Initialisierungs
+    let _activeSensor: SensorVersion = SensorVersion.SI1151;
+
+
+    // ============================================================
+    // SI1145 – Interne Implementierung
+    // I2C-Adresse: 0x60
+    // Betrieb: Auto-Modus (kontinuierliche Messung)
+    // UV-Index: direkte Hardware-Messung via eingebautem UV-Detektor
+    // ============================================================
+
+    const SI45_ADDR = 0x60;
+
+    function si45_setreg(reg: number, dat: number): void {
+        let buf = pins.createBuffer(2);
+        buf[0] = reg;
+        buf[1] = dat;
+        pins.i2cWriteBuffer(SI45_ADDR, buf);
+    }
+
+    function si45_getreg(reg: number): number {
+        pins.i2cWriteNumber(SI45_ADDR, reg, NumberFormat.UInt8BE);
+        return pins.i2cReadNumber(SI45_ADDR, NumberFormat.UInt8BE);
+    }
+
+    function si45_getUInt16LE(reg: number): number {
+        pins.i2cWriteNumber(SI45_ADDR, reg, NumberFormat.UInt8BE);
+        return pins.i2cReadNumber(SI45_ADDR, NumberFormat.UInt16LE);
+    }
+
+    function si45_writeParam(p: number, v: number): number {
+        si45_setreg(0x17, v);
+        si45_setreg(0x18, p | 0xA0);
+        return si45_getreg(0x2E);
+    }
+
+    function si45_init(): void {
+        // Reset-Sequenz
+        si45_setreg(0x08, 0x00);
+        si45_setreg(0x09, 0x00);
+        si45_setreg(0x04, 0x00);
+        si45_setreg(0x05, 0x00);
+        si45_setreg(0x06, 0x00);
+        si45_setreg(0x03, 0x00);
+        si45_setreg(0x21, 0xFF);
+        si45_setreg(0x18, 0x01);
+        basic.pause(10);
+        si45_setreg(0x07, 0x17);
+        basic.pause(10);
+        // UV-Index-Koeffizienten laut Datenblatt
+        si45_setreg(0x13, 0x29);
+        si45_setreg(0x14, 0x89);
+        si45_setreg(0x15, 0x02);
+        si45_setreg(0x16, 0x00);
+        // UV + Sichtbar + IR aktivieren
+        si45_writeParam(0x01, 0x80 | 0x20 | 0x10);
+        // Interrupt bei jeder Messung
+        si45_setreg(0x03, 0x01);
+        si45_setreg(0x04, 0x01);
+        // Messrate (Auto): 255 × 31,25 µs ≈ 8 ms
+        si45_setreg(0x08, 0xFF);
+        // Auto-Modus starten
+        si45_setreg(0x18, 0x0F);
     }
 
 
+    // ============================================================
+    // SI1151 – Interne Implementierung
+    // I2C-Adresse: 0x53
+    // Betrieb: FORCE-Modus (Messung auf Anforderung)
+    // UV-Index: berechnet aus IR- und Visible-Kanal (kein UV-Detektor)
+    // ============================================================
+
+    const SI51_ADDR = 0x53;
+
+    // Parameter-Register-Adressen (SI1151)
+    const SI51_CHAN_LIST    = 0x01;
+    const SI51_ADCCONFIG_0  = 0x02;
+    const SI51_ADCSENS_0    = 0x03;
+    const SI51_ADCPOST_0    = 0x04;
+    const SI51_MEASCONFIG_0 = 0x05;
+    const SI51_MEASRATE_H   = 0x1A;
+    const SI51_MEASRATE_L   = 0x1B;
+    const SI51_MEASCOUNT_0  = 0x1C;
+    const SI51_MEASCOUNT_1  = 0x1D;
+    const SI51_MEASCOUNT_2  = 0x1E;
+
+    // Steuer-Register-Adressen (SI1151)
+    const SI51_HOSTIN_0  = 0x0A;
+    const SI51_COMMAND   = 0x0B;
+    const SI51_RESPONSE_0 = 0x11;
+    const SI51_RESPONSE_1 = 0x10;
+    const SI51_HOSTOUT_0 = 0x13;
+    const SI51_HOSTOUT_2 = 0x15;
+
+    // Befehls-Codes (SI1151)
+    const SI51_RESET_SW  = 0x01;
+    const SI51_FORCE     = 0x11;
+
+    let si51_writeBuf: Buffer = pins.createBuffer(2);
+
+    function si51_write(): void {
+        pins.i2cWriteBuffer(SI51_ADDR, si51_writeBuf, false);
+    }
+
+    function si51_readReg(reg: number): number {
+        let buf = pins.createBuffer(1);
+        buf[0] = reg;
+        pins.i2cWriteBuffer(SI51_ADDR, buf, false);
+        buf = pins.i2cReadBuffer(SI51_ADDR, 1, false);
+        return buf[0];
+    }
+
+    function si51_readReg16(reg: number): number {
+        let buf = pins.createBuffer(1);
+        buf[0] = reg;
+        pins.i2cWriteBuffer(SI51_ADDR, buf, false);
+        buf = pins.i2cReadBuffer(SI51_ADDR, 2, false);
+        return buf[0] * 256 + buf[1];  // Big-Endian laut Datenblatt
+    }
+
+    // Befehl senden und auf Bestätigung durch Befehlszähler warten
+    function si51_sendCommand(code: number): void {
+        let r: number;
+        let ctr: number;
+        do {
+            ctr = si51_readReg(SI51_RESPONSE_0);
+            si51_writeBuf[0] = SI51_COMMAND;
+            si51_writeBuf[1] = code;
+            si51_write();
+            r = si51_readReg(SI51_RESPONSE_0);
+        } while (r == ctr);  // warten bis Zähler sich ändert
+    }
+
+    // Parameter im RAM des SI1151 setzen
+    function si51_paramSet(loc: number, val: number): void {
+        let r: number;
+        let ctr: number;
+        do {
+            ctr = si51_readReg(SI51_RESPONSE_0);
+            si51_writeBuf[0] = SI51_HOSTIN_0;
+            si51_writeBuf[1] = val;
+            si51_write();
+            si51_writeBuf[0] = SI51_COMMAND;
+            si51_writeBuf[1] = loc | 0x80;  // PARAM_SET
+            si51_write();
+            r = si51_readReg(SI51_RESPONSE_0);
+        } while (r == ctr);  // warten bis Zähler sich ändert
+    }
+
+    // Kanal konfigurieren (4 Register: ADCCONFIG, ADCSENS, ADCPOST, MEASCONFIG)
+    function si51_configChannel(index: number, adcConfig: number, adcSens: number, adcPost: number, measConfig: number): void {
+        if (index < 0 || index > 5) return;
+        const inc = index * 4;
+        si51_paramSet(SI51_ADCCONFIG_0 + inc, adcConfig);
+        si51_paramSet(SI51_ADCSENS_0 + inc, adcSens);
+        si51_paramSet(SI51_ADCPOST_0 + inc, adcPost);
+        si51_paramSet(SI51_MEASCONFIG_0 + inc, measConfig);
+    }
+
+    function si51_init(): void {
+        si51_sendCommand(SI51_RESET_SW);
+        basic.pause(25);
+        // Kanal 0: Large IR  (ADCMUX = 0x0D)
+        si51_configChannel(0, 0x0D, 0x00, 0x00, 0x00);
+        // Kanal 1: Large White / sichtbares Licht  (ADCMUX = 0x0F)
+        si51_configChannel(1, 0x0F, 0x00, 0x00, 0x00);
+        // Kanal 2: Small IR  (ADCMUX = 0x00)
+        si51_configChannel(2, 0x00, 0x00, 0x00, 0x00);
+        si51_paramSet(SI51_MEASRATE_H, 0);
+        si51_paramSet(SI51_MEASRATE_L, 1);
+        si51_paramSet(SI51_MEASCOUNT_0, 5);
+        si51_paramSet(SI51_MEASCOUNT_1, 10);
+        si51_paramSet(SI51_MEASCOUNT_2, 10);
+        basic.pause(100);
+    }
+
+    function si51_readVisible(): number {
+        // Nur Kanal 1 (Large White) → Ergebnis in HOSTOUT_0/1
+        si51_paramSet(SI51_CHAN_LIST, 0x02);
+        si51_sendCommand(SI51_FORCE);
+        basic.pause(10);
+        return si51_readReg16(SI51_HOSTOUT_0);
+    }
+
+    function si51_readIR(): number {
+        // Nur Kanal 0 (Large IR) → Ergebnis in HOSTOUT_0/1
+        si51_paramSet(SI51_CHAN_LIST, 0x01);
+        si51_sendCommand(SI51_FORCE);
+        basic.pause(10);
+        return si51_readReg16(SI51_HOSTOUT_0);
+    }
+
+    function si51_readUV(): number {
+        // Kanal 0 (IR) + Kanal 1 (Visible) gleichzeitig
+        // Kanal 0 → HOSTOUT_0/1, Kanal 1 → HOSTOUT_2/3
+        si51_paramSet(SI51_CHAN_LIST, 0x03);
+        si51_sendCommand(SI51_FORCE);
+        basic.pause(10);
+        let ch_ir  = si51_readReg16(SI51_HOSTOUT_0);
+        let ch_vis = si51_readReg16(SI51_HOSTOUT_2);
+        // UV-Annäherung aus IR und Visible (AN498-Formelstruktur)
+        // Koeffizienten ggf. mit kalibriertem UV-Meter anpassen
+        let uv = (ch_vis * 5.41 - ch_ir * 0.08) / 1000.0;
+        if (uv < 0) uv = 0;
+        return uv;
+    }
+
+
+    // ============================================================
+    // Öffentliche API – gleiche Blöcke für beide Sensoren
+    // ============================================================
+
     /**
-* init Grove Sunlight module
-* 
-*/
-    let si1151 = new SI1151();
-    //% group="Sunlight sensor SI1151"
-    //% block="init sunlight sensor"
-    export function initSunlight() {
-        //if (!sgp30) {
-        si1151.init();
+     * Initialise the Grove Sunlight Sensor.
+     * Select the sensor version from the dropdown.
+     */
+    //% group="Sunlight Sensor"
+    //% block="initialise sunlight sensor %version at A0"
+    //% version.fieldEditor="gridpicker"
+    //% weight=100
+    export function initSunlight(version: SensorVersion): void {
+        _activeSensor = version;
+        if (version === SensorVersion.SI1145) {
+            si45_init();
+        } else {
+            si51_init();
+        }
     }
 
     /**
-    * get halfword visible light
-    * 
-    */
-    //% group="Sunlight sensor SI1151"
-    //% block="Light intensity [lm]"
+     * Returns the current visible light reading.
+     */
+    //% group="Sunlight Sensor"
+    //% block="light intensity"
+    //% weight=80
     export function getHalfWord_Visible(): number {
-        return Math.round(si1151.ReadHalfWord_VISIBLE());
+        if (_activeSensor === SensorVersion.SI1145) {
+            return si45_getUInt16LE(0x22);
+        } else {
+            return Math.round(si51_readVisible());
+        }
     }
 
     /**
-    * get halfword infrared light
-    * 
-    */
-    //% group="Sunlight sensor SI1151"
-    //% block="IR intensity [lm]"
-    export function getHalfWord_IR(): number {
-        return Math.round(si1151.ReadHalfWord_IR());
+     * Returns the current infrared reading.
+     */
+    //% group="Sunlight Sensor"
+    //% block="infrared"
+    //% weight=70
+    export function getHalfWordIR(): number {
+        if (_activeSensor === SensorVersion.SI1145) {
+            return si45_getUInt16LE(0x24);
+        } else {
+            return Math.round(si51_readIR());
+        }
     }
 
     /**
-* get halfword uv
-* 
-*/
-    //% group="Sunlight sensor SI1151"
+     * Returns the UV index. Directly measured on SI1145,
+     * calculated from IR and visible channels on SI1151.
+     */
+    //% group="Sunlight Sensor"
     //% block="UV index"
-    export function getHalfWord_UV(): number {
-        return Math.round(si1151.ReadHalfWord_UV());
+    //% weight=60
+    export function getHalfWordUV(): number {
+        if (_activeSensor === SensorVersion.SI1145) {
+            return si45_getUInt16LE(0x2C) / 100;
+        } else {
+            return Math.round(si51_readUV() * 10) / 10;
+        }
     }
 }

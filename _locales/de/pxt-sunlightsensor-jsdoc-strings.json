@@ -1,0 +1,6 @@
+{
+  "SunlightSensor.initSunlight": "Initialisiert den Grove Sunlight Sensor (SI1145 oder SI1151) über I2C. Muss einmalig beim Start aufgerufen werden.",
+  "SunlightSensor.getHalfWord_Visible": "Gibt den aktuellen Messwert für sichtbares Licht zurück.",
+  "SunlightSensor.getHalfWordIR": "Gibt den aktuellen Infrarot-Messwert zurück.",
+  "SunlightSensor.getHalfWordUV": "Gibt den UV-Index zurück. Beim SI1145 direkt gemessen, beim SI1151 aus IR- und Visible-Kanal berechnet."
+}
