@@ -12,10 +12,10 @@ enum SensorVersion {
     SI1145 = 1
 }
 
-//% color=#F7B731 icon="\uf185" block="Sunlight Sensor"
+//% color=#F7B731 icon="\uf185" block="Sonnenlichtsensor"
 namespace SunlightSensor {
 
-    // Sensor Initialisierungs
+    // Welcher Sensor wurde initialisiert?
     let _activeSensor: SensorVersion = SensorVersion.SI1151;
 
 
@@ -232,8 +232,8 @@ namespace SunlightSensor {
      * Initialise the Grove Sunlight Sensor.
      * Select the sensor version from the dropdown.
      */
-    //% group="Sunlight Sensor"
-    //% block="initialise sunlight sensor %version at A0"
+    //% group="Sonnenlichtsensor"
+    //% block="Sonnenlichtsensor %version an A0 initialisieren"
     //% version.fieldEditor="gridpicker"
     //% weight=100
     export function initSunlight(version: SensorVersion): void {
@@ -248,8 +248,8 @@ namespace SunlightSensor {
     /**
      * Returns the current visible light reading.
      */
-    //% group="Sunlight Sensor"
-    //% block="light intensity"
+    //% group="Sonnenlichtsensor"
+    //% block="Lichtstärke"
     //% weight=80
     export function getHalfWord_Visible(): number {
         if (_activeSensor === SensorVersion.SI1145) {
@@ -262,8 +262,8 @@ namespace SunlightSensor {
     /**
      * Returns the current infrared reading.
      */
-    //% group="Sunlight Sensor"
-    //% block="infrared"
+    //% group="Sonnenlichtsensor"
+    //% block="Infrarot"
     //% weight=70
     export function getHalfWordIR(): number {
         if (_activeSensor === SensorVersion.SI1145) {
@@ -277,8 +277,8 @@ namespace SunlightSensor {
      * Returns the UV index. Directly measured on SI1145,
      * calculated from IR and visible channels on SI1151.
      */
-    //% group="Sunlight Sensor"
-    //% block="UV index"
+    //% group="Sonnenlichtsensor"
+    //% block="UV-Index"
     //% weight=60
     export function getHalfWordUV(): number {
         if (_activeSensor === SensorVersion.SI1145) {
