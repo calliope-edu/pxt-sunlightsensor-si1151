@@ -13,10 +13,10 @@
         "main.ts",
         "README.md",
         "icon.png",
-        "_locales/de/pxt-sunlightsensor-strings.json",
-        "_locales/de/pxt-sunlightsensor-jsdoc-strings.json",
-        "_locales/en/pxt-sunlightsensor-strings.json",
-        "_locales/en/pxt-sunlightsensor-strings.json"
+        "_locales/de/sonnenlichtsensor-strings.json",
+        "_locales/de/sonnenlichtsensor-jsdoc-strings.json",
+        "_locales/en/sonnenlichtsensor-strings.json",
+        "_locales/en/sonnenlichtsensor-jsdoc-strings.json"
     ],
     "testFiles": [
         "test.ts"
