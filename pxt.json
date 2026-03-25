@@ -1,5 +1,6 @@
 {
     "name": "Sonnenlichtsensor",
+    "version": "0.0.2",
     "description": "Erweiterung für Sonnenlichtsensor (SI1145 & SI1151)",
     "dependencies": {
         "core": "*"
